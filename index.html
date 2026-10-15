@@ -31,20 +31,38 @@ table{width:100%;border-collapse:collapse;font-size:10px}td,th{padding:2px 4px;t
 .btn{background:#0c0c10;color:var(--pk);border:1px solid #4a2a3c;border-radius:3px;font:700 9px ui-monospace,monospace;padding:1px 6px;cursor:pointer;margin-left:4px}
 .code{font-size:10.5px;line-height:15.5px}.code .k{color:#ececf1}.code .v{color:var(--y)}.code .c{color:var(--mut)}.code .rw{display:grid;grid-template-columns:170px 70px 70px 14px}.code .rw.bad{background:#2a1022}
 .pills{position:absolute;left:10px;bottom:8px;font-size:9px;display:flex;gap:4px;align-items:center}.pills span{border:1px dashed #44445a;padding:1px 5px;border-radius:3px;color:var(--mut)}.pills span.on{background:var(--pk);color:#000;border-color:var(--pk)}
+
+/* ===== layout que enche a janela (sem escala uniforme) ===== */
+#stage{position:fixed;inset:0;width:auto;transform:none!important;padding:8px 10px;display:grid;gap:8px;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) clamp(210px,31vh,420px);grid-template-areas:"hd hd hd" "cl of cr" "bt bt bt"}
+.hd{grid-area:hd;height:auto}.hd h1{font-size:clamp(20px,1.6vw,32px)}
+.cards{margin:0;display:flex;flex-direction:column;gap:8px;min-height:0;min-width:0}#cardsL{grid-area:cl}#cardsR{grid-area:cr}
+.cd{height:auto;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(6px,.8vh,12px) 10px}
+.cd .nm{font-size:clamp(14px,1.05vw,21px)}.cd .st,.cd .tk,.cd .q{font-size:clamp(9.5px,.62vw,12.5px)}.cd .nv{font-size:clamp(13px,.95vw,19px)}.cd .row{margin-top:4px}
+#ofr{grid-area:of;height:100%;min-height:0;aspect-ratio:16/9;max-width:calc(100vw - 2*clamp(230px,17vw,420px) - 36px);justify-self:center;padding:4px}
+#owrap{width:100%!important;height:100%}
+#bot3{grid-area:bt;display:grid;grid-template-columns:1fr 1.15fr 1.05fr;gap:8px;min-height:0}
+#bot3 .pn{margin:0;height:auto!important;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+#bal{width:100%!important;flex:1;min-height:0}
+.an{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto minmax(0,1fr) minmax(0,1.1fr);gap:4px 8px}.an .stats{grid-column:1/3;margin:0}
+#ach{width:100%!important;height:100%!important;min-height:0}.an .rt{min-height:0;overflow:hidden}
+#atabw{grid-column:1/3;min-height:0;overflow:hidden}
+.code{overflow:hidden}.th{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:6px;padding-bottom:26px}#spd{width:100%!important;height:100%!important;min-height:0}
+.code{font-size:clamp(9.5px,.6vw,12px);line-height:1.45}.code .rw{grid-template-columns:minmax(0,1.9fr) minmax(0,.8fr) minmax(0,.8fr) 14px}.code .rw span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+table{font-size:clamp(9.5px,.58vw,12px)}.ph{font-size:clamp(10px,.62vw,12.5px)}
 </style></head><body><div id="stage">
 <div class="hd"><div class="lg"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="9" fill="#ff4fb4"/><rect x="6" y="8" width="3" height="4" fill="#111"/><rect x="13" y="8" width="3" height="4" fill="#111"/></svg></div>
 <div><h1>GROKBOT + JEV</h1><div class="sub">DEGEN LAB · MEMECOINS SOL · ESCOLHAS DO DESK</div></div><span class="paper">📄 PAPER · DINHEIRO VIRTUAL</span>
 <div class="sp"></div><div class="day" id="day">—</div><div class="day" id="live">—</div><div class="clk" id="clk">--:-- PT</div></div>
-<div class="cards" id="cards"></div>
+<div class="cards" id="cardsL"></div>
 <div id="ofr"><div id="owrap"><img id="obg" src="assets/office-bg.jpg" alt="Escritório DEGEN LAB"><canvas id="oc" width="2048" height="1152"></canvas></div></div>
-<div class="pn"><div class="ph"><span>SALDO · <span id="bday">—</span> · PAPER</span><b id="bstat">—</b></div><canvas id="bal" width="2264" height="340"></canvas></div>
-<div class="duo">
+<div class="cards" id="cardsR"></div>
+<div id="bot3">
+<div class="pn"><div class="ph"><span>SALDO · <span id="bday">—</span> · PAPER</span><b id="bstat">—</b></div><canvas id="bal" width="1000" height="300"></canvas></div>
 <div class="pn"><div class="ph"><span>JEV · ANÁLISE <span class="mut" id="atok"></span></span><span><b id="nscan">—</b><button class="btn" id="expJ">JSON</button><button class="btn" id="expC">CSV</button></span></div>
- <div class="stats" id="astats"></div>
- <div style="display:grid;grid-template-columns:1.25fr 1fr;gap:8px"><canvas id="ach" width="620" height="230" style="width:310px;height:115px"></canvas><table id="achk"></table></div>
- <table style="margin-top:4px"><thead><tr><th>TOKEN</th><th>LIQ</th><th>VOL 24H</th><th>24H</th><th>AUTO-PRÉ</th><th>FINAL</th><th>CHAVES DE VETO</th></tr></thead><tbody id="atab"></tbody></table></div>
+ <div class="an"><div class="stats" id="astats"></div><canvas id="ach" width="620" height="230"></canvas><div class="rt"><table id="achk"></table></div>
+ <div id="atabw"><table><thead><tr><th>TOKEN</th><th>LIQ</th><th>VOL 24H</th><th>24H</th><th>AUTO-PRÉ</th><th>FINAL</th><th>CHAVES DE VETO</th></tr></thead><tbody id="atab"></tbody></table></div></div></div>
 <div class="pn"><div class="ph"><span>thresholds.py <span class="mut">— regras da mesa (motor)</span></span><b>TODO O VETO FALHA FECHADO</b></div>
- <div style="display:grid;grid-template-columns:330px 1fr;gap:6px"><div class="code" id="thr"></div><canvas id="spd" width="420" height="500" style="width:210px;height:250px"></canvas></div>
+ <div class="th"><div class="code" id="thr"></div><canvas id="spd" width="420" height="500"></canvas></div>
  <div class="pills" id="pills"></div></div>
 </div></div>
 <script>
@@ -60,7 +78,8 @@ const pick=a=>a[Math.random()*a.length|0],now=()=>performance.now();
 const PK='#ff4fb4',G='#3dff8f',R='#ff4d5e',Y='#ffd23f',C='#3fd5ff',O='#ff9a3c',W='#f2f2f7';
 let S=null;
 // ---------- escala da página (cabe numa janela) ----------
-function scale(){const st=$('stage'),h=st.offsetHeight,w=1180,k=Math.min(innerWidth/w,innerHeight/h);st.style.transform=`scale(${k})`;st.style.left=Math.max(0,(innerWidth-w*k)/2)+'px'}
+function fitC(id){const c=$(id);if(!c)return;const r=c.getBoundingClientRect(),d=Math.min(2,devicePixelRatio||1);const w=Math.max(50,Math.round(r.width*d)),h=Math.max(50,Math.round(r.height*d));if(c.width!==w||c.height!==h){c.width=w;c.height=h}}
+function scale(){['bal','ach','spd'].forEach(fitC);if(S){balance();analysis()}}
 addEventListener('resize',scale);
 // ---------- bots ----------
 const BOTS=[
@@ -83,10 +102,10 @@ function cardNum(b){const d=S||{},tk=d.tokens||[];switch(b.n){
  case'FILLS':{const c=(d.closed||[]).slice().sort((a,b)=>Date.parse(b.exitTime||0)-Date.parse(a.exitTime||0))[0];return[c?sg(c.pnl):'—',c?'último fill $'+c.name:'último fill']}
  case'JOURNAL':return[d.tid!=null?'#'+d.tid:'—','tickets'];
  case'CRAWLER':{const m=((agOf(b)||{}).last||'').match(/(\d+) perfis.*?(\d+) pares/);return[m?m[1]+' / '+m[2]:'—','perfis / pares']}}}
-function cards(){$('cards').innerHTML=BOTS.map(b=>{const a=agOf(b),n=cardNum(b),fresh=a&&a.at?Math.max(4,100-(Date.now()-a.at)/6e4*2):0;
+function cards(){const H=BOTS.map(b=>{const a=agOf(b),n=cardNum(b),fresh=a&&a.at?Math.max(4,100-(Date.now()-a.at)/6e4*2):0;
  const q=lastLog(b);return`<div class="cd"><span class="ic" style="background:${b.c}"></span><div class="nm" style="color:${b.c}">${b.n}</div><div class="st">${esc(b.st)}</div><span class="tg">${a&&a.on===false?'OFF':'PAPER'}</span>
  <div class="row"><span class="tk">${esc(n[1])} · ${a&&a.at?hm(a.at):'—'}</span><span class="nv">${esc(n[0])}</span></div><div class="bar"><i style="width:${fresh}%;background:${b.c}"></i></div>
- <div class="q ${q?'':'m'}">${q?'“'+esc(q)+'”':esc((a&&a.last)||'—')}</div></div>`}).join('')}
+ <div class="q ${q?'':'m'}">${q?'“'+esc(q)+'”':esc((a&&a.last)||'—')}</div></div>`});$('cardsL').innerHTML=H.slice(0,4).join('');$('cardsR').innerHTML=H.slice(4).join('')}
 const TAGS={CHIEF:['CHIEF','SYS'],SCAN:['SCAN'],VET:['VET','AUTO-VET'],SOCIAL:['SOCIAL'],RISK:['PIPE'],FILLS:['FILLS'],JOURNAL:['JOURNAL'],CRAWLER:['CRAWLER']};
 function lastLog(b){const l=((S&&S.logs)||[]).filter(l=>TAGS[b.n].includes(l.tag)||(b.n==='SOCIAL'&&/sentimento/.test(l.msg||''))).pop();return l?l.msg:''}
 // ================= ESCRITÓRIO (ilustração + sobreposição animada) =================
@@ -150,7 +169,7 @@ function frame(t){const dt=Math.min(50,t-last);last=t;T.length=0;A.forEach(a=>st
  A.forEach(a=>{const m=a.fixed||(now()<a.bubT?a.bub:'');if(!m)return;g.font='600 22px ui-monospace,monospace';const w=Math.min(520,g.measureText(m).width+30),h=38;let x=a.x*2-w/2,y=a.y*2-92;x=Math.max(6,Math.min(cv.width-w-6,x));if(y<6)y=a.y*2+44;
   g.fillStyle='rgba(10,10,16,.92)';g.strokeStyle=a.c===W?'#cfd6e0':a.c;g.lineWidth=3;g.beginPath();g.roundRect(x,y,w,h,19);g.fill();g.stroke();g.beginPath();const tx0=Math.max(x+20,Math.min(x+w-20,a.x*2));g.moveTo(tx0-7,y+h);g.lineTo(tx0+7,y+h);g.lineTo(tx0,y+h+9);g.fill();
   let s=m;while(g.measureText(s).width>w-30&&s.length)s=s.slice(0,-2);if(s!==m)s+='…';g.fillStyle='#ececf1';g.textAlign='left';g.fillText(s,x+15,y+h/2+1)});
- if(!S){g.font='700 36px ui-monospace';g.fillStyle='#ececf1';g.textAlign='center';g.fillText('a ligar ao motor…',cv.width/2,cv.height/2)}
+ if(!S){g.font='700 36px ui-monospace,monospace';g.fillStyle='#ececf1';g.textAlign='center';g.fillText('a ligar ao motor…',cv.width/2,cv.height/2)}
  requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
 // ---------- eventos reais → animação ----------
@@ -169,12 +188,12 @@ function derive(){const d=S;A.forEach(a=>a.fixed='');if(d.cb)AB.CHIEF.fixed='dis
  lastId=logs.length?Math.max(...logs.map(l=>l.id||0)):lastId;if(lastTid!=null&&d.tid>lastTid){act(AB.FILLS,9000);say(AB.FILLS,'ding ding! ticket paper #'+d.tid);act(AB.JOURNAL,8000);say(AB.JOURNAL,'a registar o #'+d.tid)}lastTid=d.tid??lastTid}
 setInterval(()=>{if(!S)return;const a=pick(A);if(a.fixed||now()<a.bubT||a.moving)return;const ag=agOf(a);if(ag&&ag.last&&Math.random()<.6)say(a,ag.last.length>44?ag.last.slice(0,43)+'…':ag.last,3200)},4500);
 // ================= SALDO =================
-function balance(){const c=$('bal'),x=c.getContext('2d'),W_=c.width,H_=c.height,d=S||{};x.clearRect(0,0,W_,H_);const eq=(d.equity||[]).map(e=>+e.v).filter(v=>!isNaN(v));
+function balance(){const c=$('bal'),x=c.getContext('2d'),W_=c.width,H_=c.height,d=S||{};x.clearRect(0,0,W_,H_);const fs=Math.max(18,Math.round(Math.min(H_*.2,W_*.055))),RX=W_-Math.round(fs*5.4);const eq=(d.equity||[]).map(e=>+e.v).filter(v=>!isNaN(v));
  const pnl=d.bal!=null&&d.dayStart!=null?d.bal-d.dayStart:null;$('bday').textContent='DIA '+((d.dayKey||'—').slice(5));$('bstat').textContent=(d.wins??'—')+'W '+(d.losses??'—')+'L · DIA '+(pnl==null?'—':(pnl>=0?'+':'')+f2(pnl/d.dayStart*100)+'%');
- x.font='700 30px ui-monospace,monospace';x.fillStyle='#8a8a99';x.textAlign='left';x.fillText('SALDO',W_-420,H_*0.42);x.font='900 64px ui-monospace,monospace';x.fillStyle='#3dff8f';x.shadowColor='#3dff8f';x.shadowBlur=18;x.fillText(usd(d.bal),W_-420,H_*0.62);x.shadowBlur=0;
+ x.font='700 '+Math.round(fs*.45)+'px ui-monospace,monospace';x.fillStyle='#8a8a99';x.textAlign='left';x.fillText('SALDO',RX,H_*0.42);x.font='900 '+fs+'px ui-monospace,monospace';x.fillStyle='#3dff8f';x.shadowColor='#3dff8f';x.shadowBlur=18;x.fillText(usd(d.bal),RX,H_*0.64);x.shadowBlur=0;
  if(eq.length<2){x.fillStyle='#8a8a99';x.fillText('—',W_/2,H_/2);return}
- const cw=W_-480,ch=H_*0.68;let lo=Math.min(...eq),hi=Math.max(...eq);if(hi-lo<1){lo-=5;hi+=5}const P=i=>[20+i*cw/(eq.length-1),14+(1-(eq[i]-lo)/(hi-lo))*(ch-20)];
- x.font='500 22px ui-monospace';x.fillStyle='#55556a';[hi,(hi+lo)/2,lo].forEach((v,k)=>x.fillText('$'+f2(v,0),24,22+k*(ch-30)/2));
+ const cw=RX-60,ch=H_*0.68;let lo=Math.min(...eq),hi=Math.max(...eq);if(hi-lo<1){lo-=5;hi+=5}const P=i=>[20+i*cw/(eq.length-1),14+(1-(eq[i]-lo)/(hi-lo))*(ch-20)];
+ x.font='500 '+Math.round(fs*.33)+'px ui-monospace,monospace';x.fillStyle='#55556a';[hi,(hi+lo)/2,lo].forEach((v,k)=>x.fillText('$'+f2(v,0),24,22+k*(ch-30)/2));
  const gr=x.createLinearGradient(0,14,0,ch);gr.addColorStop(0,'rgba(61,255,143,.28)');gr.addColorStop(1,'rgba(61,255,143,0)');x.fillStyle=gr;x.beginPath();x.moveTo(20,ch);eq.forEach((_,i)=>x.lineTo(...P(i)));x.lineTo(20+cw,ch);x.fill();
  x.strokeStyle='#3dff8f';x.lineWidth=5;x.shadowColor='#3dff8f';x.shadowBlur=22;x.beginPath();eq.forEach((_,i)=>i?x.lineTo(...P(i)):x.moveTo(...P(i)));x.stroke();x.shadowBlur=0;const lp=P(eq.length-1);x.fillStyle='#fff';x.beginPath();x.arc(lp[0],lp[1],8,0,7);x.fill();
  const dv=eq.map((v,i)=>i?v-eq[i-1]:0),mx=Math.max(1,...dv.map(Math.abs)),bw=cw/eq.length;dv.forEach((v,i)=>{const h=Math.abs(v)/mx*(H_-ch-12)+2;x.fillStyle=v>=0?'#1f8a50':'#b0283c';x.fillRect(20+i*bw,H_-h,Math.max(2,bw-3),h)})}
@@ -189,7 +208,7 @@ function analysis(){const d=S,tk=(d.tokens||[]).slice(0,40);if(!tk.length){$('at
  // gráfico: 24h dos tokens analisados (dados reais; sem histórico de preço no motor)
  const c=$('ach'),x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);x.fillStyle='#0c0c10';x.fillRect(0,0,c.width,c.height);const v=tk.slice(0,24);const mx=Math.max(1,...v.map(q=>Math.abs(Math.max(-100,Math.min(300,q.ch||0)))));const z=c.height*0.55;
  x.strokeStyle='#24242c';x.beginPath();x.moveTo(0,z);x.lineTo(c.width,z);x.stroke();v.forEach((q,i)=>{const val=Math.max(-100,Math.min(300,q.ch||0)),h=val/mx*(c.height*0.5),bw=c.width/v.length;x.fillStyle=i===sel%tk.length?PK:val>=0?'#2fd47a':'#ff4d5e';x.fillRect(i*bw+2,val>=0?z-h:z,bw-4,Math.abs(h)||1)});
- x.font='600 18px ui-monospace';x.fillStyle='#8a8a99';x.fillText('variação 24h dos últimos tokens',8,20);
+ x.font='600 '+Math.round(Math.max(11,c.height*.075))+'px ui-monospace,monospace';x.fillStyle='#8a8a99';x.fillText('variação 24h dos últimos tokens',8,20);
  $('atab').innerHTML=tk.slice(0,7).map((q,i)=>{const f=finalOf(q);return`<tr class="${q===t?'sel':''}"><td>$${esc(q.name)}</td><td>${fk(q.liq)}</td><td>${fk(q.vol)}</td><td class="${(q.ch||0)>=0?'pos':'neg'}">${q.ch==null?'—':f2(q.ch,1)+'%'}</td><td><span class="b ${q.vet||''}">${q.vet||'—'}</span></td><td><span class="b ${f.final||'PENDENTE'}">${f.final||'—'}</span></td><td class="mut">${esc(f.keys.slice(0,3).join(', '))||'—'}${f.keys.length>3?' +'+(f.keys.length-3):''}</td></tr>`}).join('');
  thresholds(t,F)}
 function thresholds(t,F){const v=(S.vetCache||{})[t.addr]||t.vd||{},mk=(v.markets||[]).find(m=>m.pubkey===t.pairAddress),am=t.created?(Date.now()-t.created)/6e4:null,vr=t.liq>0&&t.vol!=null?t.vol/t.liq:null;
@@ -202,13 +221,13 @@ function thresholds(t,F){const v=(S.vetCache||{})[t.addr]||t.vd||{},mk=(v.market
  $('pills').innerHTML='<b style="color:var(--pk)">filter.py</b> — a ordem é o ponto: '+['rugcheck','x','vet','site/CA','hype','liq/vol/idade','ENTRY'].map((p,i)=>`<span class="${i===(pillI%7)?'on':''}">${p}</span>`).join('→')}
 let pillI=0;setInterval(()=>{pillI++;if(S){const p=$('pills');p&&p.querySelectorAll('span').forEach((s,i)=>s.classList.toggle('on',i===pillI%7))}},900);
 // teia de vetos (contagem real das chaves de veto)
-function spider(t){const c=$('spd'),x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);if(!S)return requestAnimationFrame(spider);const cnt={};const add=k=>{cnt[k]=(cnt[k]||0)+1};
+function spider(t){const c=$('spd'),x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);if(!S)return requestAnimationFrame(spider);const k_=Math.min(c.width/420,c.height/500);x.save();x.translate((c.width-420*k_)/2,(c.height-500*k_)/2);x.scale(k_,k_);const cnt={};const add=k=>{cnt[k]=(cnt[k]||0)+1};
  (S.tokens||[]).forEach(q=>(q.finalKeys||[]).forEach(add));Object.values(S.finals||{}).forEach(f=>(f.keys||[]).forEach(add));const ks=Object.keys(cnt).sort((a,b2)=>cnt[b2]-cnt[a]).slice(0,10);
- const cx=c.width/2,cy=c.height/2-10,R=150,mx=Math.max(1,...ks.map(k=>cnt[k])),rot=t/9000;x.strokeStyle='rgba(255,154,60,.35)';x.lineWidth=2;[60,110,150].forEach(r=>{x.beginPath();x.arc(cx,cy,r,0,7);x.stroke()});
+ const cx=210,cy=240,R=150,mx=Math.max(1,...ks.map(k=>cnt[k])),rot=t/9000;x.strokeStyle='rgba(255,154,60,.35)';x.lineWidth=2;[60,110,150].forEach(r=>{x.beginPath();x.arc(cx,cy,r,0,7);x.stroke()});
  ks.forEach((k,i)=>{const a=rot+i/ks.length*6.283,r=60+cnt[k]/mx*90,px=cx+Math.cos(a)*r,py=cy+Math.sin(a)*r;x.strokeStyle='#ff9a3c';x.lineWidth=3;x.beginPath();x.moveTo(cx,cy);x.lineTo(px,py);x.stroke();
-  x.fillStyle='#3dff8f';x.beginPath();x.arc(px,py,7+cnt[k]/mx*6,0,7);x.fill();x.font='600 17px ui-monospace';x.fillStyle=i<2?'#ff4fb4':'#ececf1';x.textAlign=px<cx?'right':'left';x.fillText(k+' '+cnt[k],px+(px<cx?-12:12),py+5)});
+  x.fillStyle='#3dff8f';x.beginPath();x.arc(px,py,7+cnt[k]/mx*6,0,7);x.fill();x.font='600 17px ui-monospace,monospace';x.fillStyle=i<2?'#ff4fb4':'#ececf1';x.textAlign=px<cx?'right':'left';x.fillText(k+' '+cnt[k],px+(px<cx?-12:12),py+5)});
  x.save();x.translate(cx,cy);x.rotate(rot*3);x.strokeStyle='#ff4fb4';x.lineWidth=3;x.strokeRect(-26,-12,52,24);x.restore();x.fillStyle='#ff9a3c';x.beginPath();x.arc(cx,cy,7,0,7);x.fill();
- if(!ks.length){x.fillStyle='#8a8a99';x.font='600 24px ui-monospace';x.textAlign='center';x.fillText('—',cx,cy)}x.font='600 16px ui-monospace';x.fillStyle='#8a8a99';x.textAlign='center';x.fillText('teia de vetos (contagem real)',cx,c.height-8);requestAnimationFrame(spider)}
+ if(!ks.length){x.fillStyle='#8a8a99';x.font='600 24px ui-monospace,monospace';x.textAlign='center';x.fillText('—',cx,cy)}x.font='600 16px ui-monospace,monospace';x.fillStyle='#8a8a99';x.textAlign='center';x.fillText('teia de vetos (contagem real)',cx,492);x.restore();requestAnimationFrame(spider)}
 requestAnimationFrame(spider);
 setInterval(()=>{if(S){sel++;analysis()}},7000);
 // ================= export =================
