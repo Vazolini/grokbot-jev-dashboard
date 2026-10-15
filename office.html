@@ -1,0 +1,156 @@
+<!doctype html><html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DEGEN LAB · Escritório PAPER</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#0b1d2a;color:#fff;font:13px/1.25 "Courier New",monospace}
+.app{height:100vh;display:grid;grid-template-rows:auto 1fr auto;gap:6px;padding:6px}
+header{display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,#ff3d7f,#ff9f1c,#ffe14d,#2ee59d,#1fb6ff);background-size:300% 100%;animation:sh 8s linear infinite;color:#111;padding:5px 10px;border:3px solid #111;box-shadow:4px 4px 0 #000;font-weight:900}
+@keyframes sh{to{background-position:300% 0}}
+header h1{font-size:20px;letter-spacing:1px;text-shadow:2px 2px 0 #fff}
+.paper{background:#111;color:#ffe14d;padding:3px 8px;border:2px dashed #ffe14d;animation:bl 1.2s steps(2) infinite}
+@keyframes bl{50%{color:#ff3d7f;border-color:#ff3d7f}}
+header .sp{flex:1}.pill{background:#fff;border:2px solid #111;padding:2px 6px;font-size:12px}
+.main{display:grid;grid-template-columns:minmax(220px,19%) 1fr minmax(240px,22%);gap:6px;min-height:0}
+.col{display:flex;flex-direction:column;gap:6px;min-height:0}
+.panel{background:#13293d;border:3px solid #1fb6ff;box-shadow:3px 3px 0 #000;padding:6px;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+.panel h2{font-size:12px;color:#ffe14d;margin-bottom:4px;text-transform:uppercase}
+.big{font-size:24px;font-weight:900;color:#2ee59d}.neg{color:#ff5d5d!important}.pos{color:#2ee59d!important}.mut{color:#8fb3c9}
+.kv{display:flex;justify-content:space-between;font-size:12px;padding:1px 0}
+.list{overflow:hidden;flex:1;font-size:11.5px}
+.row{display:grid;grid-template-columns:1fr auto auto;gap:4px;padding:2px 0;border-bottom:1px dotted #2a4a63;align-items:center}
+.tag{font-size:10px;padding:0 4px;border:1px solid #111;color:#111;font-weight:900}
+.GOOD{background:#2ee59d}.WARN{background:#ffe14d}.RUG{background:#ff5d5d}.ENTRY{background:#1fb6ff}.REJECT{background:#ff3d7f}.NA{background:#555;color:#ddd}
+.feed div{padding:2px 0;border-bottom:1px dotted #2a4a63;font-size:11px}
+.feed b{color:#ff9f1c}
+/* office */
+.office{position:relative;border:4px solid #111;box-shadow:5px 5px 0 #000;overflow:hidden;
+ background:repeating-conic-gradient(#1d4e5f 0 25%,#173f4e 0 50%) 0 0/48px 48px}
+.office:before{content:"";position:absolute;left:0;right:0;top:0;height:16%;background:linear-gradient(#ff9f1c,#ff3d7f);border-bottom:4px solid #111}
+.neon{position:absolute;top:2%;left:50%;transform:translateX(-50%);font-weight:900;font-size:clamp(16px,2.4vw,34px);color:#ffe14d;text-shadow:0 0 6px #ffe14d,3px 3px 0 #111;animation:fl 3s infinite;white-space:nowrap}
+@keyframes fl{0%,100%{opacity:1}92%{opacity:.3}94%{opacity:1}96%{opacity:.4}}
+.slot{position:absolute;top:2%;font-size:clamp(18px,2.4vw,36px)}
+.bot{position:absolute;width:13%;height:30%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+.desk{width:100%;height:22%;background:#ff9f1c;border:3px solid #111;box-shadow:3px 3px 0 #000;display:flex;align-items:center;justify-content:center;font-weight:900;color:#111;font-size:11px}
+.char{position:relative;width:46px;height:62px;margin-bottom:-4px;animation:idle 1.6s steps(2) infinite}
+.head{position:absolute;left:9px;top:0;width:28px;height:26px;background:var(--skin);border:3px solid #111}
+.head:before,.head:after{content:"";position:absolute;top:8px;width:5px;height:5px;background:#111}.head:before{left:5px}.head:after{right:5px}
+.body{position:absolute;left:5px;top:24px;width:36px;height:34px;background:var(--c);border:3px solid #111}
+.prop{position:absolute;right:-18px;top:16px;font-size:24px;filter:drop-shadow(2px 2px 0 #000)}
+.name{position:absolute;bottom:-1px;width:100%;text-align:center}
+.nm{background:#111;color:var(--c);font-weight:900;font-size:11px;padding:1px 5px;margin-top:2px;border:2px solid var(--c)}
+.state{font-size:10px;color:#fff;background:#0009;padding:0 4px;margin-top:2px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@keyframes idle{50%{transform:translateY(-2px)}}
+.bot.act .char{animation:hop .35s steps(2) infinite}
+@keyframes hop{50%{transform:translateY(-8px) rotate(-4deg)}}
+.bot.act .prop{animation:wig .3s steps(2) infinite}
+@keyframes wig{50%{transform:rotate(25deg) scale(1.2)}}
+.bot.sleep .char{animation:none;filter:grayscale(1) brightness(.6)}
+.bubble{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#fff;color:#111;border:3px solid #111;padding:3px 6px;font-size:11px;font-weight:700;width:max-content;max-width:190px;box-shadow:3px 3px 0 #000;opacity:0;transition:opacity .3s;z-index:5}
+.bubble:after{content:"";position:absolute;top:100%;left:45%;border:7px solid transparent;border-top-color:#111}
+.bubble.on{opacity:1;animation:pop .3s}
+@keyframes pop{0%{transform:translateX(-50%) scale(.3)}80%{transform:translateX(-50%) scale(1.1)}}
+.stamp{position:absolute;top:30%;left:50%;transform:translateX(-50%) rotate(-15deg);font-weight:900;font-size:16px;color:#ff3d7f;border:3px solid #ff3d7f;padding:0 4px;background:#fffc;opacity:0}
+.stamp.on{animation:st 1.2s}
+@keyframes st{0%{opacity:0;transform:translateX(-50%) rotate(-15deg) scale(3)}20%{opacity:1;transform:translateX(-50%) rotate(-15deg) scale(1)}80%{opacity:1}100%{opacity:0}}
+.ticker{position:absolute;bottom:0;left:0;right:0;background:#111;color:#2ee59d;border-top:3px solid #ffe14d;white-space:nowrap;overflow:hidden;font-size:12px;padding:3px 0}
+.ticker span{display:inline-block;padding-left:100%;animation:tk 40s linear infinite}
+@keyframes tk{to{transform:translateX(-100%)}}
+footer{font-size:11px;color:#8fb3c9;display:flex;gap:12px}
+.coin{position:absolute;font-size:18px;animation:fall 2.5s linear forwards;z-index:4}
+@keyframes fall{from{transform:translateY(-30px) rotate(0)}to{transform:translateY(110%) rotate(540deg);opacity:0}}
+</style></head><body><div class="app">
+<header><h1>🧪 DEGEN LAB</h1><span class="paper">📄 PAPER · DINHEIRO VIRTUAL</span><span class="sp"></span>
+<span class="pill" id="live">—</span><span class="pill" id="upd">atualizado: —</span><span class="pill" id="cb">disjuntor: —</span></header>
+<div class="main">
+ <div class="col">
+  <div class="panel"><h2>💰 Saldo (virtual)</h2><div class="big" id="bal">—</div>
+   <div class="kv"><span>P&L hoje</span><b id="pday">—</b></div><div class="kv"><span>P&L semana</span><b id="pweek">—</b></div>
+   <div class="kv"><span>Ganhas / Perdidas</span><b id="wl">—</b></div><div class="kv"><span>Taxa de acerto</span><b id="wr">—</b></div>
+   <svg id="eq" viewBox="0 0 200 50" preserveAspectRatio="none" style="width:100%;height:50px;margin-top:4px"></svg></div>
+  <div class="panel" style="flex:1"><h2>📂 Posições abertas</h2><div class="list" id="open"></div>
+   <h2 style="margin-top:6px">🧾 Últimas fechadas</h2><div class="list" id="closed"></div></div>
+ </div>
+ <div class="office" id="office"><div class="neon">★ CASINO DO DEGEN ★</div><span class="slot" style="left:3%">🎰</span><span class="slot" style="right:3%">🎰</span>
+  <div class="ticker"><span id="tick">—</span></div></div>
+ <div class="col">
+  <div class="panel" style="flex:1.1"><h2>🪙 Últimos tokens · auto-pré → final</h2><div class="list" id="toks"></div></div>
+  <div class="panel" style="flex:1"><h2>📣 Feed de eventos</h2><div class="list feed" id="feed"></div></div>
+ </div>
+</div>
+<footer><span>Fonte: state.json publicado (branch data) · atualiza a cada 30s</span><span>Sem carteira, sem ordens reais — tudo simulado.</span><span id="src"></span></footer>
+</div>
+<script>
+const OWNER='Vazolini',REPO='grokbot-jev-dashboard',BR='data';
+const BOTS=[
+ ['CHIEF','#ffe14d','#f2c9a0','☕',43,22,'CHEFE'],['SCAN','#1fb6ff','#e0b48a','🔭',8,40,'RADAR'],['VET','#2ee59d','#c98d5e','🔍',26,40,'CARIMBO'],
+ ['SOCIAL','#ff3d7f','#f2c9a0','📱',62,40,'TELEMÓVEL'],['CRAWLER','#ff9f1c','#8d5a3b','🕵️',80,40,'CARTEIRAS'],
+ ['RISK','#ff5d5d','#e0b48a','🛡️',14,68,'ESCUDO'],['FILLS','#7ee8fa','#c98d5e','🔔',43,68,'SINO'],['JOURNAL','#b8f35d','#f2c9a0','✏️',72,68,'DIÁRIO']];
+const off=document.getElementById('office'),E={};
+for(const [k,c,s,p,x,y,d] of BOTS){const b=document.createElement('div');b.className='bot';b.style.left=x+'%';b.style.top=y+'%';
+ b.innerHTML=`<div class="bubble"></div><div class="char" style="--c:${c};--skin:${s}"><div class="head"></div><div class="body"></div><div class="prop">${p}</div><div class="stamp"></div></div><div class="desk">${d}</div><span class="nm" style="--c:${c}">${k}</span><span class="state">—</span>`;
+ off.appendChild(b);E[k]=b;}
+const $=i=>document.getElementById(i),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const nf=(v,d=2)=>v==null||isNaN(v)?'—':Number(v).toLocaleString('pt-PT',{minimumFractionDigits:d,maximumFractionDigits:d});
+const usd=v=>v==null||isNaN(v)?'—':(v<0?'-':'')+'$'+nf(Math.abs(v));
+const sg=v=>v==null||isNaN(v)?'—':(v>=0?'+':'')+usd(v).replace('-','−');
+const hm=t=>t?new Date(t).toLocaleTimeString('pt-PT',{timeZone:'Europe/Lisbon',hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—';
+const cls=v=>v==null||isNaN(v)?'':v>=0?'pos':'neg';
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function say(k,txt,stamp){const b=E[k];if(!b)return;const q=b.querySelector('.bubble');q.textContent=txt;q.classList.remove('on');void q.offsetWidth;q.classList.add('on');
+ b.classList.add('act');clearTimeout(b._t);b._t=setTimeout(()=>{q.classList.remove('on');b.classList.remove('act')},6000);
+ if(stamp){const s=b.querySelector('.stamp');s.textContent=stamp;s.classList.remove('on');void s.offsetWidth;s.classList.add('on');}}
+function coins(e){for(let i=0;i<14;i++){const c=document.createElement('span');c.className='coin';c.textContent=e;c.style.left=Math.random()*95+'%';c.style.top='0';c.style.animationDelay=Math.random()*1.2+'s';off.appendChild(c);setTimeout(()=>c.remove(),4000);}}
+// motivo curto a partir do texto real do PIPE
+function shortWhy(m){const r=[];if(/RugCheck/i.test(m))r.push('sem RugCheck');if(/VET RUG/.test(m))r.push('VET RUG');if(/CA não confirmado/.test(m))r.push('CA não confirmado');
+ if(/sem conta X/.test(m))r.push('sem X');if(/sem website/.test(m))r.push('sem site');if(/liquidez/.test(m))r.push('liq baixa');if(/idade do par/.test(m))r.push('par bebé');if(/ambos WARN/.test(m))r.push('VET+SOCIAL WARN');
+ return r.length?r.slice(0,3).join(' · '):m.slice(0,60);}
+function line(l){const m=l.msg||'',n=(m.match(/\$[^\s:]+/)||[''])[0];
+ switch(l.tag){
+  case 'SCAN':return['SCAN',pick(['Avistei ','Terra à vista: ','Radar apitou: ','Novo bicho: '])+n+'!'];
+  case 'CRAWLER':return['CRAWLER',pick(['A seguir rastos… ','Cheira-me a baleia… ','Farejei: '])+(m.match(/\d+ perfis/)||['—'])[0]];
+  case 'VET':case 'AUTO-VET':{const v=(m.match(/: (GOOD|WARN|RUG)/)||[])[1];return['VET',v==='RUG'?n+' é RUG! Nem pensar 🚫':v==='GOOD'?n+' parece limpinho ✅':n+' hmm… '+(v||'—'),v==='RUG'?'RUG':v==='GOOD'?'OK':v];}
+  case 'SOCIAL':case 'INFO':if(/sentimento/.test(m)){const s=(m.match(/(\d+)\/100/)||[])[1];return['SOCIAL',n+': hype '+(s??'—')+'/100 '+(/SIMULADO|simulado/.test(m)?'(simulado 🙃)':'')];}return null;
+  case 'PIPE':if(/BLOQUEADO/.test(m))return['RISK',pick(['Aqui não passas! ','Bloqueado! ','Escudo ativo! '])+n+' — '+shortWhy(m),'REJECT'];if(/APROVADO|ENTR/i.test(m))return['RISK','Aprovado '+n+' 👍'];return null;
+  case 'CHIEF':return['CHIEF',/fechad/.test(m)?'Fecha isso! '+n+' 🧯':m.slice(0,70)];
+  case 'SYS':return['CHIEF',m.slice(0,70)];
+  default:if(/TICKET|FILL/i.test(m))return['FILLS','DING DING! '+n+' (papel) 🔔'];return null;}}
+let lastId=-1,lastTid=null,lastClosed=null,first=true;
+async function j(u,o){const c=new AbortController();setTimeout(()=>c.abort(),15000);const r=await fetch(u,{cache:'no-store',signal:c.signal,...o});if(!r.ok)throw r.status;return r;}
+async function load(){let d=null,src='—';
+ try{const sha=(await (await j(`https://api.github.com/repos/${OWNER}/${REPO}/commits/${BR}`,{headers:{Accept:'application/vnd.github.sha'}})).text()).trim();d=await (await j(`https://raw.githubusercontent.com/${OWNER}/${REPO}/${sha}/state.json`)).json();src='sha '+sha.slice(0,7);}catch(e){}
+ if(!d){try{d=await (await j(`https://raw.githubusercontent.com/${OWNER}/${REPO}/${BR}/state.json?t=${Date.now()}`)).json();src='cdn';}catch(e){}}
+ $('src').textContent='fonte: '+src;if(!d){$('live').textContent='⚠ sem dados';return;}render(d);}
+function render(d){
+ const age=d.updatedAt?(Date.now()-Date.parse(d.updatedAt))/1000:null;
+ $('live').textContent=age==null?'—':age<300?'🟢 motor vivo':'🟠 dados com '+Math.round(age/60)+' min';
+ $('upd').textContent='atualizado: '+hm(d.updatedAt);$('cb').textContent=d.cb==null?'disjuntor: —':d.cb?'⛔ PAUSA: '+(d.cbReason||'—'):'disjuntor: OK';
+ $('bal').textContent=usd(d.bal);
+ const pd=d.bal!=null&&d.dayStart!=null?d.bal-d.dayStart:null,pw=d.bal!=null&&d.weekStart!=null?d.bal-d.weekStart:null;
+ $('pday').textContent=sg(pd);$('pday').className=cls(pd);$('pweek').textContent=sg(pw);$('pweek').className=cls(pw);
+ $('wl').textContent=(d.wins??'—')+' / '+(d.losses??'—');const n=(d.wins||0)+(d.losses||0);$('wr').textContent=n?nf(100*d.wins/n,0)+'%':'—';
+ const eq=(d.equity||[]).map(e=>e.v).filter(v=>v!=null);if(eq.length>1){const mn=Math.min(...eq),mx=Math.max(...eq),r=mx-mn||1;
+  $('eq').innerHTML=`<polyline fill="none" stroke="${eq.at(-1)>=eq[0]?'#2ee59d':'#ff5d5d'}" stroke-width="2" points="${eq.map((v,i)=>(i*200/(eq.length-1)).toFixed(1)+','+(48-(v-mn)/r*46).toFixed(1)).join(' ')}"/>`;}else $('eq').innerHTML='';
+ const op=d.open||[];$('open').innerHTML=op.length?op.map(p=>{const u=p.entry&&p.last?(p.last/p.entry-1)*100:null;return `<div class="row"><span>#${p.id??'—'} $${esc(p.name)||'—'}</span><span>${usd(p.size)}</span><b class="${cls(p.pnl??u)}">${p.pnl!=null?sg(p.pnl):u!=null?nf(u,1)+'%':'—'}</b></div>`}).join(''):'<div class="mut">Nenhuma posição aberta — o CHEFE está a beber café ☕</div>';
+ const cl=(d.closed||[]).slice().sort((a,b)=>Date.parse(b.exitTime||0)-Date.parse(a.exitTime||0));
+ $('closed').innerHTML=cl.slice(0,8).map(p=>`<div class="row"><span>#${p.id??'—'} $${esc(p.name)||'—'} <span class="mut">${esc(p.exitReason)||'—'}</span></span><span class="mut">${hm(p.exitTime)}</span><b class="${cls(p.pnl)}">${sg(p.pnl)}</b></div>`).join('')||'<div class="mut">—</div>';
+ // tokens: final = ENTRY se houve ticket, REJECT se PIPE BLOQUEADO, senão —
+ const logs=d.logs||[],traded=new Set([...(d.open||[]),...(d.closed||[])].map(p=>p.addr));
+ const fin=t=>{if(traded.has(t.addr))return'ENTRY';const nm='$'+t.name;return logs.some(l=>l.tag==='PIPE'&&/BLOQUEADO/.test(l.msg)&&l.msg.startsWith(nm+' '))?'REJECT':null;};
+ const tk=(d.tokens||[]).slice().sort((a,b)=>(b.created||0)-(a.created||0));
+ $('toks').innerHTML=tk.slice(0,14).map(t=>{const pre=t.heur||null,f=fin(t);return `<div class="row"><span>$${esc(t.name)||'—'} <span class="mut">liq ${t.liq!=null?'$'+nf(t.liq/1000,1)+'k':'—'}</span></span><span class="tag ${pre||'NA'}" title="auto-pré (heurístico)">${pre||'—'}</span><span class="tag ${f||'NA'}">${f||'—'}</span></div>`}).join('')||'<div class="mut">—</div>';
+ const fl=logs.slice(-18).reverse();$('feed').innerHTML=fl.map(l=>`<div><span class="mut">${hm(l.t)}</span> <b>${esc(l.tag)}</b> ${esc((l.msg||'').slice(0,110))}</div>`).join('')||'<div class="mut">—</div>';
+ $('tick').textContent=tk.slice(0,12).map(t=>`$${t.name} ${t.ch!=null?(t.ch>=0?'▲':'▼')+nf(Math.abs(t.ch),1)+'%':'—'}`).join('   ·   ')||'—';
+ // estado por bot (dados reais de agents.last)
+ const ag=d.agents||{};for(const k in E){const a=k==='VET'?(ag['AUTO-VET']&&(!ag.VET||ag['AUTO-VET'].at>ag.VET.at)?ag['AUTO-VET']:ag.VET):ag[k];
+  E[k].querySelector('.state').textContent=a?.last?hm(a.at)+' · '+a.last:'—';E[k].querySelector('.state').title=a?.last||'';
+  E[k].classList.toggle('sleep',!!a&&a.on===false);}
+ if(d.cb)say('CHIEF','Disjuntor ligado! Toda a gente em pausa ⛔');
+ // eventos novos -> balões (na 1.ª carga, só os 6 mais recentes)
+ const nw=logs.filter(l=>l.id>lastId);const q=first?nw.slice(-6):nw.slice(-12);lastId=logs.length?Math.max(...logs.map(l=>l.id)):lastId;
+ const used={};let delay=0;for(const l of q.reverse()){const r=line(l);if(!r||used[r[0]])continue;used[r[0]]=1;setTimeout(()=>say(...r),delay);delay+=900;}
+ if(!first&&d.tid!=null&&lastTid!=null&&d.tid>lastTid){setTimeout(()=>{say('FILLS','DING DING! Entrada em papel #'+d.tid+' 🔔');say('JOURNAL','A apontar o ticket #'+d.tid+'… ✍️');coins('🪙');},delay);}
+ const lc=cl[0];if(!first&&lc&&lastClosed!=null&&lc.id!==lastClosed){say('JOURNAL','Fechou #'+lc.id+' $'+lc.name+': '+sg(lc.pnl)+' ('+(lc.exitReason||'—')+')');say('CHIEF',lc.pnl>=0?'Lucro (de mentira)! 🎉':'Ai a carteira virtual… 😭');coins(lc.pnl>=0?'💸':'💀');}
+ lastTid=d.tid;lastClosed=lc?lc.id:null;first=false;
+ if(!op.length&&!d.cb&&!used.CHIEF)setTimeout(()=>say('CHIEF',pick(['Zero posições. Paciência é lucro ☕','Só GOOD limpo entra, malta!','Nada de FOMO hoje 🧘'])),delay+800);}
+load();setInterval(load,30000);
+</script></body></html>
