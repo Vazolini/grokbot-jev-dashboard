@@ -45,7 +45,7 @@ canvas{max-width:100%}#net{width:100%;height:300px;display:block}
 <section class="card s12"><h2>Agentes</h2><div class="agents" id="agents"></div></section>
 <section class="card s8"><h2>Curva de Capital (Virtual)</h2><canvas id="eq" height="110"></canvas></section>
 <section class="card s4"><h2>Rede de Agentes</h2><canvas id="net"></canvas></section>
-<section class="card s12"><h2>🔥 FOMO / Visão Geral do Mercado <small id="upd"></small></h2><div class="tw"><table><thead><tr><th>TOKEN</th><th>PREÇO</th><th>24H</th><th>VOLUME</th><th>LIQUIDEZ</th><th>FDV</th><th>IDADE</th><th>DEX</th><th>VET <small>(⛓ on-chain / H heurístico)</small></th><th>SENTIMENTO <small>(simulado)</small></th></tr></thead><tbody id="mkt"></tbody></table></div></section>
+<section class="card s12"><h2>🔥 FOMO / Visão Geral do Mercado <small id="upd"></small></h2><div class="tw"><table><thead><tr><th>TOKEN</th><th>PREÇO</th><th>24H</th><th>VOLUME</th><th>LIQUIDEZ</th><th>FDV</th><th>IDADE</th><th>DEX</th><th>VET <small>(auto-pré · ⛓ on-chain / H heurístico)</small></th><th>FINAL <small>(ENTRY/REJECT)</small></th><th>SENTIMENTO <small>(simulado)</small></th></tr></thead><tbody id="mkt"></tbody></table></div></section>
 <section class="card s6"><h2>Trades Paper Recentes (FILLS) <button class="btn" id="expJ">EXPORTAR HISTÓRICO</button><button class="btn" id="expC">CSV</button></h2><div class="tw"><table><thead><tr><th>HORA</th><th>TOKEN</th><th>ENTRADA</th><th>TAMANHO</th><th>SL</th><th>TP</th><th>ESTADO</th><th>P&amp;L</th></tr></thead><tbody id="trades"></tbody></table></div></section>
 <section class="card s6"><h2>Log em Tempo Real</h2><div id="log"></div></section>
 <section class="card s12"><h2>Decisões do Trading Floor <small id="gdavg"></small></h2><div class="tw"><table><thead><tr><th>HORA</th><th>TOKEN</th><th>DECISÃO</th><th>ENTRADA</th><th>TAMANHO</th><th>SL</th><th>TP</th><th>RESUMO CHIEF</th><th>ASSERTIVIDADE (JOURNAL)</th><th>NOTA</th></tr></thead><tbody id="gd"><tr><td colspan="10" style="color:var(--mut)">A aguardar a primeira ronda do grupo</td></tr></tbody></table></div></section>
@@ -118,15 +118,16 @@ function status(){const e=$('src');
  $('dots').innerHTML=AG.map(n=>{const on=!off&&((S.agents||{})[n]||{}).on!==false;return`<span><span class="dot ${on?'on':'off'}"></span>${n}</span>`;}).join('');}
 function vetCell(t){const v=t.vd||{},src=t.vetSrc||'heur';
  const lbl=src==='onchain'?'VET on-chain (RugCheck)':src==='rpc'?'VET on-chain parcial (RPC Solana)':'heurístico (fallback)';
- const tip=[lbl,'Veredicto: '+t.vet,...(t.vetWhy||[]),v.mintAuth!==undefined?'Mint authority: '+(v.mintAuth||'revogada'):'',v.freezeAuth!==undefined?'Freeze authority: '+(v.freezeAuth||'revogada'):'',
+ const tip=[lbl,'Veredicto auto-pré (antes dos vetos): '+t.vet,'Resultado final: '+(t.final||'PENDENTE')+((t.finalKeys||[]).length?' ['+t.finalKeys.join(', ')+']':''),...(t.vetWhy||[]),v.mintAuth!==undefined?'Mint authority: '+(v.mintAuth||'revogada'):'',v.freezeAuth!==undefined?'Freeze authority: '+(v.freezeAuth||'revogada'):'',
   v.top10!=null?'Top10 holders (excl. LP/AMM): '+v.top10+'%':'',v.rcScore!=null?'RugCheck score: '+v.rcScore+' (menor = melhor)':'',v.lpLocked!=null?'LP bloqueada: '+fmt(v.lpLocked,0)+'%':'',
   ...(v.risks||[]).map(r=>'['+r.l+'] '+r.n+(r.v?' '+r.v:'')),'Heurístico: '+(t.heur||'—')+' '+t.score+'/100',v.err||''].filter(Boolean).join('\n');
  const chip=(txt,bad)=>`<span class="vchip ${bad===true?'bad':bad===false?'ok':''}">${txt}</span>`;
- let c=`<span class="b ${esc(t.vet)}">${esc(t.vet)}</span> <span class="vsrc">${src==='onchain'?'⛓':src==='rpc'?'⛓½':'H'}</span>`;
+ let c=`<small>auto-pré:</small> <span class="b ${esc(t.vet)}">${esc(t.vet)}</span> <span class="vsrc">${src==='onchain'?'⛓':src==='rpc'?'⛓½':'H'}</span>`;
  if(src!=='heur'){c+=chip('M',!!v.mintAuth)+chip('F',!!v.freezeAuth);if(v.top10!=null)c+=chip('T10 '+fmt(v.top10,0)+'%',v.top10>38?true:v.top10>25?null:false);if(v.rcScore!=null)c+=chip('RC '+v.rcScore,v.rcScore>=50?true:v.rcScore>=20?null:false);
   const dg=(v.risks||[]).filter(r=>r.l==='danger').length,wn=(v.risks||[]).filter(r=>r.l==='warn').length;if(dg)c+=chip('⚠'+dg,true);else if(wn)c+=chip('!'+wn,null);}
  else c+=` <small>${t.score}</small>`;
  return `<span class="vcell" title="${esc(tip)}">${c}</span>`;}
+function finalCell(t){const f=t.final||'PENDENTE',k=t.finalKeys||[];const cls=f==='ENTRY'?'GOOD':f==='REJECT'?'RUG':'WARN';return `<span class="b ${cls}" title="${esc(k.join(', '))}">${f}</span>${k.length?' <small>'+esc(k.slice(0,4).join(', '))+(k.length>4?' +'+(k.length-4):'')+'</small>':''}`;}
 function link(t){return t.url?`<a href="${esc(t.url)}" target="_blank" rel="noopener"><b>$${esc(t.name)}</b></a>`:'<b>$'+esc(t.name)+'</b>';}
 function render(){
  const u=S.open.reduce((a,t)=>a+t.size*(t.last/t.entry-1),0),eq=S.bal;
@@ -135,7 +136,7 @@ function render(){
  $('cb').style.display=S.cb?'block':'none';if(S.cb&&S.cbReason)$('cb').textContent='⛔ CIRCUIT BREAKER ATIVO — '+S.cbReason.toUpperCase()+' — NOVAS ENTRADAS PAUSADAS';
  AG.forEach(n=>{const a=(S.agents||{})[n];if(!a)return;const el=$('ag-'+n);const la=el.querySelector('.la');const txt=esc(a.last)+'<span class="ago" style="color:#8a6a4a"></span>';
   if(la.dataset.k!==String(a.at)){la.innerHTML=txt;la.dataset.k=a.at;el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),700);}});
- $('mkt').innerHTML=(S.tokens||[]).slice(0,15).map(t=>{const sv=t.sent>=60?'🟢':t.sent>=40?'🟡':'🔴';return`<tr><td>${link(t)}</td><td>${fp(t.price)}</td><td class="${t.ch>=0?'pos':'neg'}">${t.ch>=0?'+':''}${fmt(t.ch,1)}%</td><td>${fk(t.vol)}</td><td>${fk(t.liq)}</td><td>${fk(t.fdv)}</td><td>${age(t.created)}</td><td>${esc(t.dex)}</td><td>${vetCell(t)}</td><td>${sv} ${t.sent}</td></tr>`;}).join('')||'<tr><td colspan="10">Sem tokens…</td></tr>';
+ $('mkt').innerHTML=(S.tokens||[]).slice(0,15).map(t=>{const sv=t.sent>=60?'🟢':t.sent>=40?'🟡':'🔴';return`<tr><td>${link(t)}</td><td>${fp(t.price)}</td><td class="${t.ch>=0?'pos':'neg'}">${t.ch>=0?'+':''}${fmt(t.ch,1)}%</td><td>${fk(t.vol)}</td><td>${fk(t.liq)}</td><td>${fk(t.fdv)}</td><td>${age(t.created)}</td><td>${esc(t.dex)}</td><td>${vetCell(t)}</td><td>${finalCell(t)}</td><td>${sv} ${t.sent}</td></tr>`;}).join('')||'<tr><td colspan="11">Sem tokens…</td></tr>';
  const all=[...S.open,...S.closed.slice(-30)].sort((a,b)=>b.id-a.id).slice(0,14);
  $('trades').innerHTML=all.map(t=>{const open=t.status==='ABERTA',p=open?t.size*(t.last/t.entry-1):t.pnl;return`<tr><td>${hhmm(t.entryTime||t.t0)}</td><td>${link(t)}</td><td>${fp(t.entry)}</td><td>$${fmt(t.size,0)}</td><td class="neg">${fp(t.sl)}</td><td class="pos">${fp(t.tp)}</td><td>${esc(t.status)}${open?'':' <small>'+hhmm(t.exitTime)+'</small>'}</td><td class="${p>=0?'pos':'neg'}">${p>=0?'+':''}${fmt(p)}${open?' <small>n/r</small>':''}</td></tr>`;}).join('')||'<tr><td colspan="8" style="color:var(--mut)">Sem trades ainda…</td></tr>';
  // log + animação da rede com eventos novos
